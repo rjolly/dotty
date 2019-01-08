@@ -553,6 +553,13 @@ object Build {
         Seq(file)
       }.taskValue,
 
+      // Generate the ScriptEngineFactory service definition
+      resourceGenerators in Compile += Def.task {
+        val f = (resourceManaged in Compile).value / "META-INF" / "services" / "javax.script.ScriptEngineFactory"
+        IO.write(f, "dotty.tools.repl.ScriptEngine$Factory\n")
+        Seq(f)
+      }.taskValue,
+
       // get libraries onboard
       libraryDependencies ++= Seq(
         "org.scala-lang.modules" % "scala-asm" % "6.0.0-scala-1", // used by the backend
