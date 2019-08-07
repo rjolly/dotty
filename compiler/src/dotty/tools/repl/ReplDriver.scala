@@ -53,7 +53,8 @@ case class State(objectIndex: Int,
 /** Main REPL instance, orchestrating input, compilation and presentation */
 class ReplDriver(settings: Array[String],
                  out: PrintStream = Console.out,
-                 classLoader: Option[ClassLoader] = None) extends Driver {
+                 classLoader: Option[ClassLoader] = None,
+                 display: Boolean = true) extends Driver {
 
   /** Overridden to `false` in order to not have to give sources on the
    *  commandline
@@ -227,7 +228,10 @@ class ReplDriver(settings: Array[String],
 
             val warnings = newState.context.reporter.removeBufferedMessages(newState.context)
             displayErrors(warnings)(newState) // display warnings
-            displayDefinitions(unit.tpdTree, newestWrapper)(newStateWithImports)
+            if (display)
+              displayDefinitions(unit.tpdTree, newestWrapper)(newStateWithImports)
+            else
+              newStateWithImports
         }
       )
   }
