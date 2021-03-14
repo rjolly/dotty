@@ -718,11 +718,6 @@ class Typer extends Namer
             return typed(app, pt)
           case _ =>
         }
-      // Otherwise convert to Int or Double according to digits format
-      tree.kind match {
-        case Whole(radix) => lit(intFromDigits(digits, radix))
-        case _ => lit(doubleFromDigits(digits))
-      }
     }
     catch {
       case ex: FromDigitsException =>
@@ -731,6 +726,16 @@ class Typer extends Namer
           case Whole(_) => lit(0)
           case _ => lit(0.0)
         }
+    }
+    try {
+      // Otherwise convert to Int or Double according to digits format
+      tree.kind match {
+        case Whole(radix) => lit(intFromDigits(digits, radix))
+        case _ => lit(doubleFromDigits(digits))
+      }
+    }
+    catch {
+      case ex: FromDigitsException => lit(digits)
     }
   }
 

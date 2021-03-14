@@ -9,7 +9,7 @@ trait T {
   def r = 3.1_4_dd // error // error
   def s = 3_.1 // error
 
-  def tooSmall = 1.0E-325 // error
+  def tooSmall = 1.0E-325
 
   // Examples from
   // https://docs.oracle.com/javase/8/docs/technotes/guides/language/underscores-literals.html
