@@ -17,15 +17,29 @@ def foo(x: Boolean): Int throws Fail =
 def bar(x: Boolean)(using CanThrow[Fail]): Int = foo(x)
 def baz: Int throws Exception = foo(false)
 
-@main def Test =
+class Result[T]:
+  var value: T = scala.compiletime.uninitialized
+
+def tryCatch[R, E <: Exception](body: => R throws E)(c: E => Unit, f: => Unit = ()): R =
+  val res = new Result[R]
   try
-    given CanThrow[Fail] = ???
+    given CanThrow[E] = ???
+    res.value = body
+  catch c.asInstanceOf[Throwable => Unit]
+  finally f
+  res.value
+
+@main def Test =
+  tryCatch({
     println(foo(true))
     println(foo(false))
-  catch case ex: Fail =>
-    println("failed")
-  try
-    given CanThrow[Exception] = ???
+  })({
+    case ex: Fail =>
+      println("failed")
+  })
+  tryCatch(
     println(baz)
-  catch case ex: Fail =>
-    println("failed")
+  )({
+    case ex: Fail =>
+      println("failed")
+  })
