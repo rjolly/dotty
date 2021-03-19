@@ -19,7 +19,7 @@ package scala
 *  from two to one.
 *
 *  The `Conversion` class can also be used to convert explicitly, using
-*  the `convert` extension method.
+*  the `~` operator.
 */
 @java.lang.FunctionalInterface
 abstract class Conversion[-T, +U] extends Function1[T, U]:
@@ -27,5 +27,5 @@ abstract class Conversion[-T, +U] extends Function1[T, U]:
   def apply(x: T): U
 
   extension (x: T)
-    /** `x.convert` converts a value `x` of type `T` to type `U` */
-    def convert = this(x)
+    /** `~x` converts a value `x` of type `T` to type `U` */
+    def unary_~ = this(x)
