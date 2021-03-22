@@ -20,26 +20,28 @@ def baz: Int throws Exception = foo(false)
 class Result[T]:
   var value: T = scala.compiletime.uninitialized
 
-def tryCatch[R, E <: Exception](body: => R throws E)(c: E => Unit, f: => Unit = ()): R =
+def try1[R, E <: Exception](body: => R throws E): (E => Unit) => R = { c =>
   val res = new Result[R]
   try
     given CanThrow[E] = ???
     res.value = body
   catch c.asInstanceOf[Throwable => Unit]
-  finally f
   res.value
+}
+
+extension [R, E <: Exception](t: (E => Unit) => R) def catch1(c: E => Unit) = t(c)
 
 @main def Test =
-  tryCatch({
+  try1({
     println(foo(true))
     println(foo(false))
-  })({
+  }).catch1({
     case ex: Fail =>
       println("failed")
   })
-  tryCatch(
+  try1(
     println(baz)
-  )({
+  ).catch1({
     case ex: Fail =>
       println("failed")
   })
