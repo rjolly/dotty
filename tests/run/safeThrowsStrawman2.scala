@@ -1,4 +1,4 @@
-import language.experimental.erasedDefinitions
+import language.experimental.{erasedDefinitions, fewerBraces}
 
 object scalax:
   erased class CanThrow[-E <: Exception]
@@ -37,18 +37,16 @@ def bar(x: Boolean)(using CanThrow[Fail]): Int = foo(x)
 def baz: Int throws Exception = foo(false)
 
 @main def Test =
-  try1 {
+  try1:
     println(foo(true))
     println(foo(false))
-  } catch1 {
+  .catch1:
     case ex: Fail =>
       println("failed")
-  }
-  try2 {
+  try2:
     println(baz)
-  } catch1 {
+  .catch1:
     case ex: Fail =>
       println("failed")
-  } finally1 {
+  .finally1:
     println(2)
-  }
