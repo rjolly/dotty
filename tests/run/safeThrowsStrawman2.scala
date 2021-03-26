@@ -1,4 +1,5 @@
 import language.experimental.erasedDefinitions
+import java.lang.RuntimeException
 
 object scalax:
   erased class CanThrow[-E <: Exception]
@@ -8,6 +9,8 @@ object scalax:
   class Fail extends Exception
 
   def raise[E <: Exception](e: E): Nothing throws E = throw e
+
+  given CanThrow[RuntimeException] = ???
 
   private class Result[T]:
     var value: T = scala.compiletime.uninitialized
@@ -49,6 +52,7 @@ def baz: Int throws Exception = foo(false)
   } catch1 {
     case ex: Fail =>
       println("failed")
+      raise(RuntimeException())
   } finally1 {
     println(2)
   }
